@@ -1,0 +1,87 @@
+git module 12/16/24
+
+remember nano
+#git manual for command
+man git-#(command)
+ 
+#start git
+git init
+
+#create and edit file
+vim filename  
+
+#status
+git status
+
+#list all but show hidden files
+ls -la
+
+blob for titles md 66693b8d72daef9170108c6ab4b3abd7f3950dd2
+
+#make new branch and switch to it
+git switch -c my_new_branch
+
+#commit with note
+git commit -m ""
+
+#stages
+git add .
+
+#graphs committs
+git log --oneline --graph --all
+
+#delete
+git branch -d my_old_branch
+
+
+git merge merged_branch
+
+#current branch is merged into main
+git rebase main
+
+#deletes hash at any stage
+git reset --soft COMMITHASH
+#takes you back to staged change
+
+#discards all changes
+--hard
+
+
+--make new repo git init
+#add remote
+git remote add <name> <uri>
+
+#now need to fetch contents
+git fetch
+git log remote/branch
+git merge origin/branch
+
+
+#make change, add branch, whatever
+#push to GitHub
+git push origin branch
+#pull request from GitHub
+main <- branch
+
+When I'm working by myself, I usually stick to a single branch, main. I mostly use Git on solo projects to keep a backup remotely and to keep a history of my changes. I only rarely use separate branches.
+
+    Make changes to files
+    git add . (or git add <files> if I only want to add specific files)
+    git commit -m "a message describing the changes"
+    git push origin main
+
+It really is that simple for most solo work. git log, git reset, and some others are, of course, useful from time to time, but the above is the core of what I do day-to-day.
+
+
+When you're working with a team, Git gets a bit more involved (and we'll cover more of this in part 2 of this course). Here's what I do:
+
+    Update my local main branch with git pull origin main
+    Checkout a new branch for the changes I want to make with git switch -c <branchname>
+    Make changes to files
+    git add .
+    git commit -m "a message describing the changes"
+    git push origin <branchname> (I push to the new branch name, not main)
+    Open a pull request on GitHub to merge my changes into main
+    Ask a team member to review my pull request
+    Once approved, click the "Merge" button on GitHub to merge my changes into main
+    Delete my feature branch, and repeat with a new branch for the next set of changes
