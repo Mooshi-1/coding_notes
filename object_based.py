@@ -25,9 +25,6 @@ def main():
                 gandalf.cast_spell(saruman)
                 print(f"Round {i} of {rounds} complete.")
                 print_status()
-
-        # Now what would you add here to make them fight?
-        # Remember to use print_status() after each spell!
         
     except Exception as e:
         print(e)
