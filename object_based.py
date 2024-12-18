@@ -51,3 +51,40 @@ class Wizard:
 
 if __name__ == "__main__":
     main()
+
+
+#continuing lesson
+#instance variable -- declared in the CONSTRUCTOR
+
+
+
+# # class Wall:
+# #     def __init__(self):
+# #         self.height = 10
+
+# # south_wall = Wall()
+# # south_wall.height = 20 # only updates this instance of a wall
+# # print(south_wall.height)
+# # # prints "20"
+
+# # north_wall = Wall()
+# # print(north_wall.height)
+# # # prints "10"
+
+#class variables are declared at the top level of the class definition
+#'static variables'
+
+## class Wall():
+##      height = 20
+
+# The terms instance and class variable, field, property and attribute are used interchangeably and usually refer to the same concept in languages that support some form of object-oriented programming. Here's a quick reference for some popular languages:
+# Language  	Class variable 	Instance variable
+# Python 	    Class variable 	Instance variable
+# Go 	        Field 	           Field
+# JavaScript 	Property 	Property
+# C#            Static field 	Field
+# Java 	        Static field 	Field
+
+
+# so class variable - the one defined at the top level of a class definition,
+# 
