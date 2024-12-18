@@ -56,20 +56,20 @@ if __name__ == "__main__":
 #continuing lesson
 #instance variable -- declared in the CONSTRUCTOR
 
+# focus on using variable that look like this 
 
+class Wall:
+    def __init__(self):
+        self.height = 10
 
-# # class Wall:
-# #     def __init__(self):
-# #         self.height = 10
+south_wall = Wall()
+south_wall.height = 20 # only updates this instance of a wall
+print(south_wall.height)
+# prints "20"
 
-# # south_wall = Wall()
-# # south_wall.height = 20 # only updates this instance of a wall
-# # print(south_wall.height)
-# # # prints "20"
-
-# # north_wall = Wall()
-# # print(north_wall.height)
-# # # prints "10"
+north_wall = Wall()
+print(north_wall.height)
+# prints "10"
 
 #class variables are declared at the top level of the class definition
 #'static variables'
@@ -87,4 +87,42 @@ if __name__ == "__main__":
 
 
 # so class variable - the one defined at the top level of a class definition,
-# 
+# is called different things in different language. 
+
+# class > instance
+# for go - field either way
+# generally speaking, move away from class variables. define them within the instance instead
+# class is essentially a global variable, can cause issues
+
+
+class Dragon:
+
+    def __init__(self, element):
+        self.element = element
+        
+
+    def get_breath_damage(self):
+        if self.element == "fire":
+            return 300
+        if self.element == "ice":
+            return 150
+        return 0
+
+
+def main():
+    first_dragon = Dragon("fire")
+    print(
+        f"{first_dragon.element} dragon does {first_dragon.get_breath_damage()} damage"
+    )
+
+    second_dragon = Dragon("ice")
+    Dragon.element = "fire"
+    print(
+        f"{second_dragon.element} dragon does {second_dragon.get_breath_damage()} damage"
+    )
+
+
+main()
+
+# fire dragon does 300 damage
+# ice dragon does 150 damage
