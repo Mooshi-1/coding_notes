@@ -228,3 +228,103 @@ class Library:
             search_string.lower() in book.title.lower()):
                 search_matches.append(book)
         return search_matches
+
+#creating a dictionary of student records
+
+class Student:
+    def __init__(self, name):
+        self.name = name
+        self.__courses = {}
+
+    def calculate_letter_grade(self, score):
+        if score >= 90:
+            return "A"
+        elif score >= 80:
+            return "B"
+        elif score >= 70:
+            return "C"
+        elif score >= 60:
+            return "D"
+        else:
+            return "F"
+
+    def add_course(self, course_name, score):
+        letter_grade = self.calculate_letter_grade(score)
+        self.__courses[course_name] = letter_grade
+
+    def get_courses(self):
+        return self.__courses
+
+
+
+#object based 
+## how can I write a Human class that holds the data and simulates the behavior of a real human?
+#functional based
+## when a human takes a step, what's the new state of the game
+
+#creating and dealing a deck of cards
+
+import random
+
+
+class DeckOfCards:
+    SUITS = ["Hearts", "Diamonds", "Clubs", "Spades"]
+    RANKS = [
+        "Ace",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "Jack",
+        "Queen",
+        "King",
+    ]
+
+    def __init__(self):
+        self.__cards = []
+        self.create_deck()
+        
+    def create_deck(self):
+        #create rank suit tuple and append to self.__cards
+        for suit in DeckOfCards.SUITS:
+            for rank in DeckOfCards.RANKS:
+                card = (rank, suit)
+                self.__cards.append(card)
+
+    def shuffle_deck(self):
+        random.shuffle(self.__cards)
+
+    def deal_card(self):
+        if self.__cards == []:
+            return None
+        return self.__cards.pop()
+
+    # don't touch below this line
+
+    def __str__(self):
+        return f"The deck has {len(self.__cards)} cards"
+
+
+
+#example of inheritence and hierarchys
+
+class RealEstate:
+    def __init__(self, location):
+        self.__location = location
+
+
+class Residential(RealEstate):
+    def __init__(self, location, bedrooms):
+        super().__init__(location)
+        self.__bedrooms = bedrooms
+
+
+class House(Residential):
+    def __init__(self, location, bedrooms, yard_size):
+        super().__init__(location, bedrooms)
+        self.__yard_size = yard_size
