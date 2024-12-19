@@ -393,4 +393,54 @@ class Dragon(Unit):
 main()
 
 
-##
+## calculating rectangles -- notice how the super() method requires 2 inputs because 
+# it's initializing the rectangle class
+
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def get_area(self):
+        return self.length * self.width
+
+    def get_perimeter(self):
+        return self.length + self.length + self.width + self.width
+
+
+class Square(Rectangle):
+    def __init__(self, length):
+        super().__init__(length, length)
+        self.width = length
+
+##another example
+##notice the user of super when calling for a function in a parent class
+
+class Siege:
+    def __init__(self, max_speed, efficiency):
+        self.max_speed = max_speed
+        self.efficiency = efficiency
+
+    def get_trip_cost(self, distance, food_price):
+        return (distance / self.efficiency) * food_price
+
+    def get_cargo_volume(self):
+        pass
+
+
+class BatteringRam(Siege):
+    def __init__(
+        self,
+        max_speed,
+        efficiency,
+        load_weight,
+        bed_area,
+    ):
+        super().__init__(max_speed, efficiency)
+        self.load_weight = load_weight
+        self.bed_area = bed_area
+
+    def get_trip_cost(self, distance, food_price):
+        return super().get_trip_cost(distance, food_price) + (self.load_weight * 0.01)
+    
+    
