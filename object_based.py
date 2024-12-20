@@ -332,7 +332,7 @@ class House(Residential):
     
     #calling on functions set up for a dragon fight
 
-    def main():
+def main():
     dragons = [
         Dragon("Green Dragon", 0, 0, 1),
         Dragon("Red Dragon", 2, 2, 2),
@@ -442,5 +442,4 @@ class BatteringRam(Siege):
 
     def get_trip_cost(self, distance, food_price):
         return super().get_trip_cost(distance, food_price) + (self.load_weight * 0.01)
-    
     
