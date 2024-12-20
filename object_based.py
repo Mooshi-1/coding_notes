@@ -443,3 +443,339 @@ class BatteringRam(Siege):
     def get_trip_cost(self, distance, food_price):
         return super().get_trip_cost(distance, food_price) + (self.load_weight * 0.01)
     
+###
+##the aoe intersecting rectangles issue
+
+class Unit:
+    def __init__(self, name, pos_x, pos_y):
+        self.name = name
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+
+    def in_area(self, x1, y1, x2, y2):
+        pass
+
+
+class Dragon(Unit):
+    def __init__(self, name, pos_x, pos_y, height, width, fire_range):
+        super().__init__(name, pos_x, pos_y)
+        self.fire_range = fire_range
+        self.height = height
+        self.width = width
+        half_height = height / 2
+        half_width = width / 2
+        
+        #notice how rectangle is called here
+        self.__hit_box = Rectangle( 
+            pos_x - half_width,
+            pos_y - half_height,
+            pos_x + half_width,
+            pos_y + half_height,
+        )
+
+    def in_area(self, x1, y1, x2, y2):
+        r1 = Rectangle(x1, y1, x2, y2) #notice how rectangle is called here
+        return r1.overlaps(self.__hit_box)
+
+class Rectangle:
+    def overlaps(self, rect):
+        return (
+            self.get_left_x() <= rect.get_right_x()
+            and self.get_right_x() >= rect.get_left_x()
+            and self.get_top_y() >= rect.get_bottom_y()
+            and self.get_bottom_y() <= rect.get_top_y()
+        )
+
+    def __init__(self, x1, y1, x2, y2):
+        self.__x1 = x1
+        self.__y1 = y1
+        self.__x2 = x2
+        self.__y2 = y2
+
+    def get_left_x(self):
+        if self.__x1 < self.__x2:
+            return self.__x1
+        return self.__x2
+
+    def get_right_x(self):
+        if self.__x1 > self.__x2:
+            return self.__x1
+        return self.__x2
+
+    def get_top_y(self):
+        if self.__y1 > self.__y2:
+            return self.__y1
+        return self.__y2
+
+    def get_bottom_y(self):
+        if self.__y1 < self.__y2:
+            return self.__y1
+        return self.__y2
+
+
+## core functions like addition can be overwritten with __add__
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __add__(self, point):
+        x = self.x + point.x
+        y = self.y + point.y
+        return Point(x, y)
+
+p1 = Point(4, 5)
+p2 = Point(2, 3)
+p3 = p1 + p2
+# p3 is (6, 8)
+##otherwise would error because cannot add Point and Point
+
+
+## crafting swords
+class Sword:
+    def __init__(self, sword_type):
+        self.sword_type = sword_type
+
+    def __add__(self, other):
+        if self.sword_type == "bronze" and other.sword_type == "bronze":
+            return Sword("iron") #notice the syntax to create a new class of sword of a new type
+        elif self.sword_type == "iron" and other.sword_type == "iron":
+            return Sword("steel")
+        else:
+            raise Exception("can not craft")
+        
+from main import *
+
+run_cases = [
+    (Sword("bronze"), Sword("bronze"), "iron", None),
+    (Sword("bronze"), Sword("iron"), None, "can not craft"),
+]
+
+submit_cases = run_cases + [
+    (Sword("steel"), Sword("steel"), None, "can not craft"),
+    (Sword("iron"), Sword("iron"), "steel", None),
+    (Sword("bronze"), Sword("steel"), None, "can not craft"),
+]
+
+
+def test(sword1, sword2, expected_result, expected_err):
+    try:
+        print("---------------------------------")
+        print(
+            f"Crafting a {sword1.sword_type} sword with a {sword2.sword_type} sword..."
+        )
+        result = sword1 + sword2
+
+        if expected_err:
+            print(f"Expected Exception: {expected_err}")
+            print("Actual: no exception raised")
+            print("Fail")
+            return False
+
+        print(f"Expected: {expected_result}")
+        print(f"Actual: {result.sword_type}")
+        print(f"A new {result.sword_type} sword was crafted!")
+        if result.sword_type != expected_result:
+            print("Fail")
+            return False
+
+    except Exception as e:
+        print(f"Expected Exception: {expected_err}")
+        print(f"Actual Exception: {e}")
+        if expected_err != str(e):
+            print("Fail")
+            return False
+
+    print("Pass")
+    return True
+
+
+def main():
+    passed = 0
+    failed = 0
+    for test_case in test_cases:
+        correct = test(*test_case)
+        if correct:
+            passed += 1
+        else:
+            failed += 1
+    if failed == 0:
+        print("============= PASS ==============")
+    else:
+        print("============= FAIL ==============")
+    print(f"{passed} passed, {failed} failed")
+
+
+test_cases = submit_cases
+if "__RUN__" in globals():
+    test_cases = run_cases
+
+main()
+
+##
+### __str__ operator tells the interpreter to call this string whenever you use print()
+class Dragon:
+    def __init__(self, name, color):
+        self.name = name
+        self.color = color
+
+    def __str__(self):
+        return f"I am {self.name}, the {self.color} dragon"
+
+## making the card game war
+
+
+import random
+
+
+class CardGame:
+    def __init__(self):
+        #create deckofcards object -- it now has those attributes!
+        self.deck = DeckOfCards()
+        #same as DeckOfCards.shuffle_deck(self.deck)
+        self.deck.shuffle_deck()
+
+        #meant to be overwritten
+    def play(self):
+        print("Nothing to play...")
+
+
+class War(CardGame):
+    def __init__(self):
+        #do not need to call self for __init__
+        super().__init__()
+        self.player1_hand = []
+        self.player2_hand = []
+
+    def play(self):
+        self.__deal_hand(self.player1_hand)
+        self.__deal_hand(self.player2_hand)
+        self.__battle()
+
+    def __deal_hand(self, hand):
+        for _ in range(5):
+            #call the deal card function belonging to the DeckOfCards (self.deck)
+            card = self.deck.deal_card()
+            if card is not None: 
+                hand.append(card)
+
+                
+        # don't touch below this line
+
+    def __battle(self):
+        player1_pile = []
+        player2_pile = []
+        player1_score = 0
+        player2_score = 0
+        ties = 0
+        while len(self.player1_hand) > 0 or len(self.player2_hand) > 0:
+            if len(self.player1_hand) == 0:
+                random.shuffle(player1_pile)
+                self.player1_hand = player1_pile.copy()
+                player1_pile.clear()
+            if len(self.player2_hand) == 0:
+                random.shuffle(player2_pile)
+                self.player2_hand = player2_pile.copy()
+                player2_pile.clear()
+            card1 = self.player1_hand.pop()
+            card2 = self.player2_hand.pop()
+            print(f"{card1} vs {card2}")
+            if card1 > card2:
+                player1_pile.append(card1)
+                player1_pile.append(card2)
+                player1_score += 1
+                print(f"Player 1 wins with {card1}")
+            elif card2 > card1:
+                player2_pile.append(card1)
+                player2_pile.append(card2)
+                player2_score += 1
+                print(f"Player 2 wins with {card2}")
+            else:
+                ties += 1
+                print("Tie! Both players draw a card and play again")
+        print("------------------------------------------")
+        print("Game over!")
+        print("------------------------------------------")
+        print(f"Player 1: {player1_score}")
+        print(f"Player 2: {player2_score}")
+        print(f"Ties: {ties}")
+        print("==========================================")
+
+
+SUITS = ["Clubs", "Diamonds", "Hearts", "Spades"]
+
+RANKS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
+
+
+def index_of(lst, item):
+    for i in range(len(lst)):
+        if lst[i] == item:
+            return i
+    return None
+
+
+class Card:
+    def __init__(self, rank, suit):
+        self.rank = rank
+        self.suit = suit
+
+    def __cmp(self, other):
+        self_suit_i = index_of(SUITS, self.suit)
+        other_suit_i = index_of(SUITS, other.suit)
+        self_rank_i = index_of(RANKS, self.rank)
+        other_rank_i = index_of(RANKS, other.rank)
+        if self_rank_i > other_rank_i:
+            return "gt"
+        if self_rank_i < other_rank_i:
+            return "lt"
+        if self_suit_i > other_suit_i:
+            return "gt"
+        if self_suit_i < other_suit_i:
+            return "lt"
+        return "eq"
+
+    def __eq__(self, other):
+        return self.__cmp(other) == "eq"
+
+    def __gt__(self, other):
+        return self.__cmp(other) == "gt"
+
+    def __lt__(self, other):
+        return self.__cmp(other) == "lt"
+
+    def __str__(self):
+        return f"{self.rank} of {self.suit}"
+
+
+class DeckOfCards:
+    def __init__(self):
+        self.__cards = []
+        self.create_deck()
+
+    def create_deck(self):
+        for suit in SUITS:
+            for rank in RANKS:
+                self.__cards.append(Card(rank, suit))
+
+    def shuffle_deck(self):
+        random.shuffle(self.__cards)
+
+    def deal_card(self):
+        if len(self.__cards) == 0:
+            return None
+        return self.__cards.pop(0)
+
+
+def test(seed):
+    random.seed(seed)
+    war = War()
+    war.play()
+
+
+def main():
+    test(1)
+    test(2)
+
+
+main()
